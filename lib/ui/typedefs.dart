@@ -1,0 +1,1 @@
+typedef PlayOrPauseCallbck = void Function();
