@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -28,4 +29,12 @@ abstract class OrientationState with _$OrientationState {
   }) = _OrientationState;
 
   const OrientationState._();
+}
+
+@immutable
+@freezed
+abstract class ModalState with _$ModalState {
+  const factory ModalState({@Default(false) bool isShowing}) = _ModalState;
+
+  const ModalState._();
 }

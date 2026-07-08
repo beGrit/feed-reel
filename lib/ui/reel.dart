@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grit_soft_feed_reel/core/builders.dart';
+import 'package:grit_soft_feed_reel/core/models.dart';
 import 'package:grit_soft_feed_reel/core/state.dart';
 import 'package:grit_soft_feed_reel/ui/reel_controls.dart';
+import 'package:grit_soft_feed_reel/ui/reel_modal.dart';
 import 'package:grit_soft_feed_reel/ui/reel_video_player.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class Reel extends StatefulWidget {
-  final String mediaUrl;
+  final ReelInfo reelInfo;
   final Builders? builders;
 
-  const Reel({super.key, this.builders, required this.mediaUrl});
+  const Reel({super.key, this.builders, required this.reelInfo});
 
   @override
   State<Reel> createState() => _ReelState();
 }
 
 class _ReelState extends State<Reel> {
+  final GlobalKey _keyReelVideoPlayer = GlobalKey();
+  final GlobalKey _keyReelControls = GlobalKey();
   late final ValueNotifier<VideoState> _videoStateNotifier;
   late final ValueNotifier<OrientationState> _orientationStateNotifier;
+  late final ValueNotifier<ModalState> _modalStateNotifier;
   late final VideoPlayerController _controller;
 
   late Builders _builders;
@@ -34,7 +39,14 @@ class _ReelState extends State<Reel> {
     _orientationStateNotifier = ValueNotifier<OrientationState>(
       OrientationState(),
     );
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.mediaUrl));
+    _modalStateNotifier = ValueNotifier<ModalState>(
+      ModalState(isShowing: false),
+    );
+    _modalStateNotifier.addListener(_handleModalStateChange);
+    _controller = VideoPlayerController.networkUrl(
+      Uri.parse(widget.reelInfo.videoUrl),
+      videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
+    );
   }
 
   @override
@@ -63,12 +75,45 @@ class _ReelState extends State<Reel> {
     _handleOrientationChange(currentOrientation);
   }
 
-  void _handleOrientationChange(Orientation orientation) {
-    if (orientation == Orientation.landscape) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  void _handleModalStateChange() {
+    if (_modalStateNotifier.value.isShowing) {
+      final currentOrientation = _orientationStateNotifier.value.orientation;
+
+      if (currentOrientation == Orientation.landscape) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      }
     } else {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      // Reset preferred orientations to allow standard auto-rotation again
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
+  }
+
+  void _handleOrientationChange(Orientation orientation) {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+
+    if (orientation == Orientation.landscape) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
+      );
+    } else {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
@@ -92,18 +137,27 @@ class _ReelState extends State<Reel> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider.value(value: _builders),
-        ChangeNotifierProvider.value(value: _controller),
-        ChangeNotifierProvider.value(value: _videoStateNotifier),
-        ChangeNotifierProvider.value(value: _orientationStateNotifier),
-      ],
-      child: Stack(
-        children: [
-          Positioned.fill(child: ReelVideoPlayer(mediaUrl: widget.mediaUrl)),
-          ReelControls(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: MultiProvider(
+        providers: [
+          Provider.value(value: _builders),
+          ChangeNotifierProvider.value(value: _controller),
+          ChangeNotifierProvider.value(value: _videoStateNotifier),
+          ChangeNotifierProvider.value(value: _orientationStateNotifier),
+          ChangeNotifierProvider.value(value: _modalStateNotifier),
         ],
+        child: Stack(
+          children: [
+            Positioned.fill(child: ReelVideoPlayer(key: _keyReelVideoPlayer)),
+            ReelControls(key: _keyReelControls),
+            ReelModal(),
+          ],
+        ),
       ),
     );
   }

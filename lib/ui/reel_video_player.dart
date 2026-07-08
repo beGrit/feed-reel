@@ -6,9 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class ReelVideoPlayer extends StatefulWidget {
-  final String mediaUrl;
-
-  const ReelVideoPlayer({super.key, required this.mediaUrl});
+  const ReelVideoPlayer({super.key});
 
   @override
   State<ReelVideoPlayer> createState() => _ReelVideoPlayerState();
@@ -38,11 +36,8 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
   @override
   void dispose() {
     _controller.removeListener(videoPlayerControllerListener);
-    _controller.dispose();
     super.dispose();
   }
-
-  void autoPlay() {}
 
   void videoPlayerControllerListener() {
     final value = _controller.value;
@@ -111,95 +106,100 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ValueNotifier<OrientationState>>(
-      builder: (context, notifier, child) {
-        final isLandscapeOrientation =
-            notifier.value.orientation == Orientation.landscape;
+    return ColoredBox(
+      color: Colors.black,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Consumer<ValueNotifier<VideoState>>(
+            builder: (context, videoStateValue, child) {
+              final videoState = _videoStateNotifier.value;
 
-        return SafeArea(
-          left: !isLandscapeOrientation,
-          top: !isLandscapeOrientation,
-          right: !isLandscapeOrientation,
-          bottom: !isLandscapeOrientation,
-          child: LayoutBuilder(
-            builder: (context, constraints) => Column(
-              children: [
-                Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.fastOutSlowIn,
-                    width: constraints.maxWidth,
-                    child: _buildVideoLayer(context),
+              if (!videoState.isInitialized) {
+                return const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              }
+              if (videoState.initFailed) {
+                return Center(
+                  child: Text(
+                    'Could not load video',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: Colors.white54),
                   ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+                );
+              }
 
-  Widget _buildVideoLayer(BuildContext context) {
-    return Consumer<ValueNotifier<VideoState>>(
-      builder: (context, value, child) {
-        if (!_videoStateNotifier.value.isInitialized) {
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-        }
-        if (_videoStateNotifier.value.initFailed) {
-          return Center(
-            child: Text(
-              'Could not load video',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(color: Colors.white54),
-            ),
+              return LayoutBuilder(
+                builder: (context, constraints) =>
+                    Consumer2<
+                      ValueNotifier<OrientationState>,
+                      ValueNotifier<ModalState>
+                    >(
+                      builder:
+                          (context, orientationNotifier, modalNotifier, child) {
+                            final orientation =
+                                orientationNotifier.value.orientation;
+                            final isLandscape =
+                                orientation == Orientation.landscape;
+                            final showModal = modalNotifier.value.isShowing;
+                            return Flex(
+                              direction: isLandscape
+                                  ? Axis.horizontal
+                                  : Axis.vertical,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Center(
+                                    child: (!isLandscapeVideo)
+                                        ? FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: SizedBox(
+                                              width:
+                                                  _controller.value.size.width,
+                                              height:
+                                                  _controller.value.size.height,
+                                              child: VideoPlayer(_controller),
+                                            ),
+                                          )
+                                        : Center(
+                                            child: AspectRatio(
+                                              aspectRatio: _videoAspectRatio,
+                                              child: Container(
+                                                color: Colors.blue,
+                                                child: Center(
+                                                  child: VideoPlayer(
+                                                    _controller,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.fastOutSlowIn,
+                                  color: Colors.transparent,
+                                  width: isLandscape
+                                      ? (showModal ? 300.0 : 0.0)
+                                      : constraints.maxWidth,
+
+                                  height: isLandscape
+                                      ? constraints.maxHeight
+                                      : (showModal ? 500.0 : 0.0),
+
+                                  child: const SizedBox.shrink(),
+                                ),
+                              ],
+                            );
+                          },
+                    ),
+              );
+            },
           );
-        }
-
-        return Consumer<ValueNotifier<OrientationState>>(
-          builder: (context, notifier, child) => Stack(
-            children: [
-              if (notifier.value.orientation == Orientation.landscape)
-                Positioned.fill(
-                  child: Container(
-                    color: Colors.black,
-                    child: Center(
-                      child: AspectRatio(
-                        aspectRatio: _videoAspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-                    ),
-                  ),
-                )
-              else if (isLandscapeVideo)
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: AspectRatio(
-                        aspectRatio: _videoAspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-                    ),
-                  ],
-                )
-              else
-                Positioned.fill(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: SizedBox(
-                      width: _controller.value.size.width,
-                      height: _controller.value.size.height,
-                      child: VideoPlayer(_controller),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 }

@@ -12,7 +12,7 @@ part of 'state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$VideoState {
+mixin _$VideoState implements DiagnosticableTreeMixin {
 
  bool get isPlaying; bool get isInitialized; bool get initFailed; bool get isBuffering; Duration get lastPosition; DateTime get lastPositionUpdateTime; bool get isStuck;
 /// Create a copy of VideoState
@@ -22,6 +22,12 @@ mixin _$VideoState {
 $VideoStateCopyWith<VideoState> get copyWith => _$VideoStateCopyWithImpl<VideoState>(this as VideoState, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VideoState'))
+    ..add(DiagnosticsProperty('isPlaying', isPlaying))..add(DiagnosticsProperty('isInitialized', isInitialized))..add(DiagnosticsProperty('initFailed', initFailed))..add(DiagnosticsProperty('isBuffering', isBuffering))..add(DiagnosticsProperty('lastPosition', lastPosition))..add(DiagnosticsProperty('lastPositionUpdateTime', lastPositionUpdateTime))..add(DiagnosticsProperty('isStuck', isStuck));
+}
 
 @override
 bool operator ==(Object other) {
@@ -33,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,isPlaying,isInitialized,initFailed,isBuffering,lastPosition,lastPositionUpdateTime,isStuck);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VideoState(isPlaying: $isPlaying, isInitialized: $isInitialized, initFailed: $initFailed, isBuffering: $isBuffering, lastPosition: $lastPosition, lastPositionUpdateTime: $lastPositionUpdateTime, isStuck: $isStuck)';
 }
 
@@ -211,7 +217,7 @@ return $default(_that.isPlaying,_that.isInitialized,_that.initFailed,_that.isBuf
 /// @nodoc
 
 
-class _VideoState extends VideoState {
+class _VideoState extends VideoState with DiagnosticableTreeMixin {
   const _VideoState({this.isPlaying = false, this.isInitialized = false, this.initFailed = false, this.isBuffering = false, this.lastPosition = Duration.zero, required this.lastPositionUpdateTime, this.isStuck = false}): super._();
   
 
@@ -230,6 +236,12 @@ class _VideoState extends VideoState {
 _$VideoStateCopyWith<_VideoState> get copyWith => __$VideoStateCopyWithImpl<_VideoState>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VideoState'))
+    ..add(DiagnosticsProperty('isPlaying', isPlaying))..add(DiagnosticsProperty('isInitialized', isInitialized))..add(DiagnosticsProperty('initFailed', initFailed))..add(DiagnosticsProperty('isBuffering', isBuffering))..add(DiagnosticsProperty('lastPosition', lastPosition))..add(DiagnosticsProperty('lastPositionUpdateTime', lastPositionUpdateTime))..add(DiagnosticsProperty('isStuck', isStuck));
+}
 
 @override
 bool operator ==(Object other) {
@@ -241,7 +253,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,isPlaying,isInitialized,initFailed,isBuffering,lastPosition,lastPositionUpdateTime,isStuck);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VideoState(isPlaying: $isPlaying, isInitialized: $isInitialized, initFailed: $initFailed, isBuffering: $isBuffering, lastPosition: $lastPosition, lastPositionUpdateTime: $lastPositionUpdateTime, isStuck: $isStuck)';
 }
 
@@ -287,7 +299,7 @@ as bool,
 }
 
 /// @nodoc
-mixin _$OrientationState {
+mixin _$OrientationState implements DiagnosticableTreeMixin {
 
  Orientation get orientation; Orientation? get prevOrientation;
 /// Create a copy of OrientationState
@@ -297,6 +309,12 @@ mixin _$OrientationState {
 $OrientationStateCopyWith<OrientationState> get copyWith => _$OrientationStateCopyWithImpl<OrientationState>(this as OrientationState, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'OrientationState'))
+    ..add(DiagnosticsProperty('orientation', orientation))..add(DiagnosticsProperty('prevOrientation', prevOrientation));
+}
 
 @override
 bool operator ==(Object other) {
@@ -308,7 +326,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,orientation,prevOrientation);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'OrientationState(orientation: $orientation, prevOrientation: $prevOrientation)';
 }
 
@@ -481,7 +499,7 @@ return $default(_that.orientation,_that.prevOrientation);case _:
 /// @nodoc
 
 
-class _OrientationState extends OrientationState {
+class _OrientationState extends OrientationState with DiagnosticableTreeMixin {
   const _OrientationState({this.orientation = Orientation.portrait, this.prevOrientation}): super._();
   
 
@@ -495,6 +513,12 @@ class _OrientationState extends OrientationState {
 _$OrientationStateCopyWith<_OrientationState> get copyWith => __$OrientationStateCopyWithImpl<_OrientationState>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'OrientationState'))
+    ..add(DiagnosticsProperty('orientation', orientation))..add(DiagnosticsProperty('prevOrientation', prevOrientation));
+}
 
 @override
 bool operator ==(Object other) {
@@ -506,7 +530,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,orientation,prevOrientation);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'OrientationState(orientation: $orientation, prevOrientation: $prevOrientation)';
 }
 
@@ -540,6 +564,275 @@ class __$OrientationStateCopyWithImpl<$Res>
 orientation: null == orientation ? _self.orientation : orientation // ignore: cast_nullable_to_non_nullable
 as Orientation,prevOrientation: freezed == prevOrientation ? _self.prevOrientation : prevOrientation // ignore: cast_nullable_to_non_nullable
 as Orientation?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$ModalState implements DiagnosticableTreeMixin {
+
+ bool get isShowing;
+/// Create a copy of ModalState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ModalStateCopyWith<ModalState> get copyWith => _$ModalStateCopyWithImpl<ModalState>(this as ModalState, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ModalState'))
+    ..add(DiagnosticsProperty('isShowing', isShowing));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ModalState&&(identical(other.isShowing, isShowing) || other.isShowing == isShowing));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isShowing);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'ModalState(isShowing: $isShowing)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ModalStateCopyWith<$Res>  {
+  factory $ModalStateCopyWith(ModalState value, $Res Function(ModalState) _then) = _$ModalStateCopyWithImpl;
+@useResult
+$Res call({
+ bool isShowing
+});
+
+
+
+
+}
+/// @nodoc
+class _$ModalStateCopyWithImpl<$Res>
+    implements $ModalStateCopyWith<$Res> {
+  _$ModalStateCopyWithImpl(this._self, this._then);
+
+  final ModalState _self;
+  final $Res Function(ModalState) _then;
+
+/// Create a copy of ModalState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? isShowing = null,}) {
+  return _then(_self.copyWith(
+isShowing: null == isShowing ? _self.isShowing : isShowing // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ModalState].
+extension ModalStatePatterns on ModalState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ModalState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ModalState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ModalState value)  $default,){
+final _that = this;
+switch (_that) {
+case _ModalState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ModalState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ModalState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isShowing)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ModalState() when $default != null:
+return $default(_that.isShowing);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isShowing)  $default,) {final _that = this;
+switch (_that) {
+case _ModalState():
+return $default(_that.isShowing);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isShowing)?  $default,) {final _that = this;
+switch (_that) {
+case _ModalState() when $default != null:
+return $default(_that.isShowing);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _ModalState extends ModalState with DiagnosticableTreeMixin {
+  const _ModalState({this.isShowing = false}): super._();
+  
+
+@override@JsonKey() final  bool isShowing;
+
+/// Create a copy of ModalState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ModalStateCopyWith<_ModalState> get copyWith => __$ModalStateCopyWithImpl<_ModalState>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ModalState'))
+    ..add(DiagnosticsProperty('isShowing', isShowing));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ModalState&&(identical(other.isShowing, isShowing) || other.isShowing == isShowing));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isShowing);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'ModalState(isShowing: $isShowing)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ModalStateCopyWith<$Res> implements $ModalStateCopyWith<$Res> {
+  factory _$ModalStateCopyWith(_ModalState value, $Res Function(_ModalState) _then) = __$ModalStateCopyWithImpl;
+@override @useResult
+$Res call({
+ bool isShowing
+});
+
+
+
+
+}
+/// @nodoc
+class __$ModalStateCopyWithImpl<$Res>
+    implements _$ModalStateCopyWith<$Res> {
+  __$ModalStateCopyWithImpl(this._self, this._then);
+
+  final _ModalState _self;
+  final $Res Function(_ModalState) _then;
+
+/// Create a copy of ModalState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? isShowing = null,}) {
+  return _then(_ModalState(
+isShowing: null == isShowing ? _self.isShowing : isShowing // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
