@@ -55,7 +55,9 @@ class _ReelState extends State<Reel> {
       MediaItem(
         id: widget.reelInfo.id,
         title: widget.reelInfo.title ?? 'Unknown Title',
-        artUri: Uri.parse('asset:///assets/images/default_cover.png'),
+        // artUri: Uri.parse(
+        //   'asset:///packages/grit_soft_feed_reel/assets/images/default_cover.png',
+        // ),
       ),
       _controller.play,
       _controller.pause,

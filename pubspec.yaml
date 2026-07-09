@@ -4,6 +4,8 @@ description: >-
 publish_to: 'none'
 version: 0.1.0+1
 
+homepage: https://github.com/beGrit/feed-reel
+
 environment:
   sdk: "^3.11.5"
   flutter: "^3.41.7"
@@ -28,5 +30,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-      - assets/images/default_cover.png
+  # assets:
+  #   - packages/grit_soft_feed_reel/assets/images/default_cover.png
