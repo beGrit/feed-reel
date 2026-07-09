@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:grit_soft_feed_reel/core/background_audio_service.dart';
 import 'package:grit_soft_feed_reel/core/builders.dart';
 import 'package:grit_soft_feed_reel/core/models.dart';
 import 'package:grit_soft_feed_reel/ui/reel.dart';
 import 'package:grit_soft_feed_reel/ui/reel_actions.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await BackgroundAudioService.instance.ensureInitialized();
   runApp(const MainApp());
 }
 

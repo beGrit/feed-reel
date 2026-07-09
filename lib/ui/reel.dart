@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grit_soft_feed_reel/core/background_audio_service.dart';
 import 'package:grit_soft_feed_reel/core/builders.dart';
 import 'package:grit_soft_feed_reel/core/models.dart';
 import 'package:grit_soft_feed_reel/core/state.dart';
@@ -46,6 +50,17 @@ class _ReelState extends State<Reel> {
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(widget.reelInfo.videoUrl),
       videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
+    );
+    BackgroundAudioService.instance.setupHandlerData(
+      MediaItem(
+        id: widget.reelInfo.id,
+        title: widget.reelInfo.title ?? 'Unknown Title',
+        artUri: Uri.parse('asset:///assets/images/default_cover.png'),
+      ),
+      _controller.play,
+      _controller.pause,
+      _controller.seekTo,
+      _controller,
     );
   }
 
@@ -100,31 +115,14 @@ class _ReelState extends State<Reel> {
     }
   }
 
-  void _handleOrientationChange(Orientation orientation) {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );
-
-    if (orientation == Orientation.landscape) {
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
-        ),
-      );
-    } else {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    }
-  }
-
   @override
   void dispose() {
+    _modalStateNotifier.removeListener(_handleModalStateChange);
+    unawaited(BackgroundAudioService.instance.stop());
+    _controller.dispose();
+    _videoStateNotifier.dispose();
+    _orientationStateNotifier.dispose();
+    _modalStateNotifier.dispose();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -160,6 +158,29 @@ class _ReelState extends State<Reel> {
         ),
       ),
     );
+  }
+
+  void _handleOrientationChange(Orientation orientation) {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+
+    if (orientation == Orientation.landscape) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
+      );
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
   }
 
   void _updateBuilders() {
